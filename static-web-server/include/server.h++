@@ -44,5 +44,7 @@ private:
     std::condition_variable _cv;
 
     void _handle_request();
+
+    bool _loadConfig();
 };
 

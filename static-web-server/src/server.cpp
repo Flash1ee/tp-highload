@@ -4,7 +4,10 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <fstream>
+#include <sstream>
 #include "server.h++"
+#include "http_handler.h++"
 
 bool Server::init() {
     this->_server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -70,13 +73,66 @@ void Server::_handle_request() {
 
         char req[2 * REQ_SIZE];
         recv(client_socket, req, sizeof(req), 0);
+        HTTPHandler requestHandler;
+        // std::cout << "Created handler\n";
+        std::string reply = requestHandler.handle(req);
+        std::cout << reply << "\n";
+//
         std::cout << "Client Request : \n" << req << "\n";
         std::string receive = "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n";
-        send(client_socket, receive.c_str(),sizeof(receive), 0);
+        send(client_socket, reply.c_str(),reply.size(), 0);
 
         // Closing connection
         close(client_socket);
 
     }
+}
 
+bool Server::_loadConfig() {
+    std::fstream configFile;
+    configFile.open("config", std::ios::in);
+    if(!configFile.is_open()) {
+        std::cerr << "Warning : Failed to load configuration file\n";
+
+        return false;
+    }
+
+    int lineNum = 1;
+    std::string line;
+    std::string key;
+    std::string value;
+    while(getline(configFile, line)) {
+        std::stringstream ssline(line);
+        std::getline(ssline, key, '=');
+        std::getline(ssline, value);
+
+        if(key[0] == '#') {
+            lineNum++;
+            continue;
+        } else if(key == "pool_size") {
+            try {
+                this->_pool_size = std::stoi(value);
+            } catch(std::exception &e) {
+                std::cerr << "Error : Can't set the pool size " << e.what() << "\n";
+            }
+        } else if(key == "port_number") {
+            try {
+                this->_server_port = std::stoi(value);
+            } catch(std::exception &e) {
+                std::cerr << "Error : Can't set the port number " << e.what() << "\n";
+            }
+        } else if(key == "backlog_size") {
+            try {
+                this->_queue_connections = std::stoi(value);
+            } catch(std::exception &e) {
+                std::cerr << "Error : Can't set the backlog size " << e.what() << "\n";
+            }
+        } else {
+            std::cerr << "Warning : Invalid configuration key at line " << lineNum << "\n";
+        }
+        lineNum++;
+    }
+    configFile.close();
+
+    return true;
 }
