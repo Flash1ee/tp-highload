@@ -33,5 +33,8 @@ docker-rm-nginx:
 func-test:
 	./httptest.py
 
-run-static-server-benchmark:
+bench-static-web-server:
 	wrk -t12 -c400 -d30s 'http://127.0.0.1:$(PORT)/httptest/splash.css'
+
+bench-nginx:
+	wrk -t12 -c400 -d30s 'http://127.0.0.1:$(NGINX)/httptest/splash.css'
