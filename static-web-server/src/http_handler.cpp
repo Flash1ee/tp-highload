@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <filesystem>
 
 #include "http_handler.h++"
 
@@ -65,7 +66,7 @@ std::string HTTPHandler::getResponseNoBody(std::stringstream& request, std::stri
     std::string version;
     std::getline(request, version, ' ');
     if(version != "HTTP/1.1\r" && version != "HTTP/1.0\r") { // if the version is not 1.1
-        std::cout << version << "\n";
+//        std::cout << version << "\n";
         std::string response = "HTTP/1.1 505 HTTP Version Not Supported\r\nServer: Flash1ee/1.0\r\nConnection: close\r\n\r\n";
         return response;
     }
@@ -107,7 +108,7 @@ std::string HTTPHandler::getResponseNoBody(std::stringstream& request, std::stri
 
     response += "\r\n\r\n";
 
-    std::cout << response;
+//    std::cout << response;
 
     return response;
 }

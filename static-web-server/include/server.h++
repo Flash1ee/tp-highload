@@ -10,6 +10,8 @@
 #include <iostream>
 #include <thread>
 #include "constants.h++"
+#include <cstring>
+#include <condition_variable>
 
 
 class Server {

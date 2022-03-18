@@ -44,9 +44,9 @@ void Server::run() {
         // Displaying the IP of the peer app
         char peerIP[INET_ADDRSTRLEN] = {0};
         if(inet_ntop(AF_INET, &this->_client_addr.sin_addr, peerIP, sizeof(peerIP))) {
-            std::cout << "Accepted connection with " << peerIP << "\n";
+//            std::cout << "Accepted connection with " << peerIP << "\n";
         } else {
-            std::cout << "Failed to get the IP of the client\n";
+//            std::cout << "Failed to get the IP of the client\n";
             return;
         }
 
@@ -54,7 +54,7 @@ void Server::run() {
         this->_requestQueue.push(_client_socket);
         this-> _cv.notify_one();
         this->_queueMutex.unlock();
-        std::cout << "Pushed request to the queue\n";
+//        std::cout << "Pushed request to the queue\n";
     }
 }
 
@@ -76,9 +76,9 @@ void Server::_handle_request() {
         HTTPHandler requestHandler;
         // std::cout << "Created handler\n";
         std::string reply = requestHandler.handle(req);
-        std::cout << reply << "\n";
+//        std::cout << reply << "\n";
 //
-        std::cout << "Client Request : \n" << req << "\n";
+//        std::cout << "Client Request : \n" << req << "\n";
         std::string receive = "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n";
         send(client_socket, reply.c_str(),reply.size(), 0);
 
