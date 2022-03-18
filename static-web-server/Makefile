@@ -34,7 +34,10 @@ func-test:
 	./httptest.py
 
 bench-static-web-server:
-	wrk -t12 -c400 -d30s 'http://127.0.0.1:$(PORT)/httptest/splash.css'
+	wrk -t24 -c800 -d30s 'http://127.0.0.1:$(PORT)/httptest/splash.css'
 
 bench-nginx:
 	wrk -t12 -c400 -d30s 'http://127.0.0.1:$(NGINX)/httptest/splash.css'
+
+
+#send_file
